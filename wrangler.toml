@@ -1,0 +1,12 @@
+name = "do"
+type = "javascript"
+account_id = "5a883b414d4090a1442b20361f3c43a9"
+workers_dev = true
+
+[build]
+command = "npm run build"
+upload_format = "modules"
+
+[durable_objects]
+implements = [{class_name = "Base", namespace_name = "Base"}]
+uses = [{binding = "Base", namespace_name = "Base"}]
