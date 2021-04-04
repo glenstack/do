@@ -3,10 +3,14 @@ type = "javascript"
 account_id = "5a883b414d4090a1442b20361f3c43a9"
 workers_dev = true
 
+kv_namespaces = [
+	 { binding = "DO_INSTANCES", id = "7a5aaa35c0514675b4ecf44cc88a2c5b", preview_id = "7a5aaa35c0514675b4ecf44cc88a2c5b" }
+]
+
 [build]
 command = "npm run build"
 upload_format = "modules"
 
 [durable_objects]
-implements = [{class_name = "Base", namespace_name = "Base"}]
+implements = [{class_name = "Base", namespace_name = "Base"}, {class_name = "Base2", namespace_name = "Base"}]
 uses = [{binding = "Base", namespace_name = "Base"}]

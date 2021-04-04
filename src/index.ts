@@ -1,4 +1,4 @@
-import { makeHandler } from './data/graphql'
+import { makeHandler } from './data'
 import { errorResponse } from './utils/errorResponse'
 
 const handleFetch = async (
@@ -19,4 +19,5 @@ export default {
 } as CFWorker<Environment>
 
 // Durable Objects
-export { Base } from './data/durableObjects/base'
+export { Base } from './data/durableGraphObjects/base'
+export { Base as Base2 } from './data/durableGraphObjects/base'

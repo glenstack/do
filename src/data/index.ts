@@ -2,8 +2,13 @@ import { makeGraphQLHandler } from '@glenstack/cf-workers-graphql'
 import { makeExecutableSchema } from '@graphql-tools/schema'
 import { stitchSchemas } from '@graphql-tools/stitch'
 import gql from 'graphql-tag'
-import { errorResponse } from '../../utils/errorResponse'
-import { makeSchema as makeBaseServiceSchema } from '../services/base'
+import {
+  typeDefs as scalarTypeDefs,
+  resolvers as scalarResolvers,
+} from './graphqlUtils/scalars'
+import { errorResponse } from '../utils/errorResponse'
+import { makeSchema as makeRelayServiceSchema } from './services/relay'
+import { makeSchema as makeBaseServiceSchema } from './services/base'
 
 const rootTypeDefs = gql`
   type Query {
@@ -16,7 +21,7 @@ const rootTypeDefs = gql`
 `
 
 const rootSchema = makeExecutableSchema({
-  typeDefs: rootTypeDefs,
+  typeDefs: [rootTypeDefs, ...scalarTypeDefs],
   resolvers: {
     Query: {
       hello: () => 'Hello, world!',
@@ -24,13 +29,19 @@ const rootSchema = makeExecutableSchema({
     Mutation: {
       hello: () => 'Hello, world!',
     },
+    ...scalarResolvers,
   },
 })
 
 const makeSchema = async (env: Environment) => {
+  const relayServiceSchema = await makeRelayServiceSchema(env)
   const baseServiceSchema = await makeBaseServiceSchema(env)
   const schema = stitchSchemas({
-    subschemas: [{ schema: rootSchema }, { schema: baseServiceSchema }],
+    subschemas: [
+      { schema: rootSchema },
+      { schema: relayServiceSchema },
+      { schema: baseServiceSchema },
+    ],
   })
   return schema
 }
